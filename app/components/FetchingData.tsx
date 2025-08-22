@@ -47,7 +47,8 @@ export default function FetchingData() {
 
   // Total Price
   const totalPrice = useMemo(
-    () => products.reduce((sum, product) => sum + Number(product.price), 0),
+    () =>
+      products.reduce((sum: number, product) => sum + Number(product.price), 0),
     [products]
   );
 
