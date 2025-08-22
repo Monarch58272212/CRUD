@@ -31,7 +31,7 @@ export default async function Page() {
             <Text> Name: {e.name}</Text>
             <Text>Price: {Number(e.price)}</Text>
             <Flex gap={2}>
-              <Button colorScheme="green">Edited</Button>
+              <Button colorScheme="green">Edit</Button>
               <Button colorScheme="red">Delete</Button>
             </Flex>
           </Flex>
