@@ -10,13 +10,8 @@ export default async function Page() {
   const { getUser } = getKindeServerSession();
   const user = await getUser();
 
-  const countAllPrice = data.reduce(
-    (sum: number, product) => sum + Number(product.price),
-    0
-  );
   return (
     <Flex flexDir={"column"} w={"100%"} justify={"center"} align={"center"}>
-      <Text>Total Price: {countAllPrice}</Text>
       <SimpleGrid columns={[1, 2, 3, 4]} spacing={4}>
         {data.map((e) => (
           <Flex key={e.id} flexDir={"column"} align={"center"} gap={2}>
