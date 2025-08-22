@@ -3,7 +3,7 @@ import { Avatar, Button, Flex, SimpleGrid, Text } from "@chakra-ui/react";
 import prisma from "../lib/prisma";
 import Image from "next/image";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
-import type { Product } from "@prisma/client";
+import { Product } from "@prisma/client";
 
 export default async function Page() {
   const data = await prisma.product.findMany();
