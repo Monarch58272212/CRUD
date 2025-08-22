@@ -195,7 +195,7 @@ export default function FetchingData() {
         {searchData.length === 0 ? (
           <Text m={"auto"}>way data pag add sa!!!</Text>
         ) : (
-          searchData.map((e) => (
+          searchData.map((e: Product) => (
             <Flex key={e.id} flexDir={"column"} align={"center"} gap={2}>
               <Image
                 src={e.imageURL || "/default.jpg"}
