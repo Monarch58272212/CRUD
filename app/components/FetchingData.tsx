@@ -46,11 +46,11 @@ export default function FetchingData() {
   const { user, isAuthenticated } = useKindeAuth();
 
   // Total Price
-  const totalPrice = useMemo(
+  /*  const totalPrice = useMemo(
     () =>
       products.reduce((sum: number, product) => sum + Number(product.price), 0),
     [products]
-  );
+  );*/
 
   //search function
   const searchData = useMemo(() => {
@@ -195,7 +195,7 @@ export default function FetchingData() {
         onChange={(e) => setSearch(e.target.value)}
         placeholder="Dire ang search.."
       />
-      <Text>Total Price: {totalPrice}</Text>
+      {/*  <Text>Total Price: {totalPrice}</Text> */}
       <SimpleGrid columns={[1, 2, 3, 4]} spacing={4}>
         {searchData.length === 0 ? (
           <Text m={"auto"}>way data pag add sa!!!</Text>
