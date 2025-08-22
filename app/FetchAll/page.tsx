@@ -11,7 +11,7 @@ export default async function Page() {
   const user = await getUser();
 
   const countAllPrice = data.reduce(
-    (sum, product) => sum + Number(product.price),
+    (sum: number, product) => sum + Number(product.price),
     0
   );
   return (
