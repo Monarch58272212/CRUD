@@ -1,6 +1,6 @@
 import prisma from "@/app/lib/prisma";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
-import { Prisma } from "@prisma/client";
+
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
