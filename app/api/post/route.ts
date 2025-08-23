@@ -26,7 +26,7 @@ export async function POST(request: Request) {
       data: {
         imageURL: data.imageURL,
         name: data.name,
-        price: new Prisma.Decimal(data.price),
+        price: Number(data.price),
         createdBy: user.id,
       },
     });
