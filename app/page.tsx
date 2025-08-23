@@ -1,4 +1,5 @@
 import { Flex } from "@chakra-ui/react";
+
 import FetchingData from "./components/FetchingData";
 
 export default function Home() {

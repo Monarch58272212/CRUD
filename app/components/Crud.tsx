@@ -41,91 +41,88 @@ export default function Crud() {
   const [editDescription, setEditDescription] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
-  //search here
   const handleSearch = useMemo(() => {
-    return posts
-      .filter((e) =>
-        e.description.toLowerCase().includes(search.toLowerCase().trim())
-      )
-      .sort((a, b) =>
-        sortz
-          ? a.description.localeCompare(b.description)
-          : b.description.localeCompare(a.description)
-      );
-  }, [posts, search, sortz]);
-  function handleEdit(post: Post) {
+    return posts.filter((e) =>
+      e.description.toLowerCase().includes(search.toLowerCase().trim())
+    );
+  }, [posts, search]);
+
+  const isComplete = (id: number) => {
+    return setPost(
+      posts.map((e) => (e.id === id ? { ...e, complete: !e.complete } : e))
+    );
+  };
+
+  const handleEdit = (post: Post) => {
     setIsOpen(true);
     setEditId(post.id);
     setEditImageUrl(post.imageUrl);
     setEditDescription(post.description);
-  }
+  };
 
-  // Update post here
-  async function handleUpdate() {
-    if (!editImageUrl.trim() || !editDescription.trim()) {
+  const handleUpdate = async () => {
+    if (!editImageUrl || !editDescription) {
       toast({
-        title: "lagyan lahat",
-        description: "lagyan mo lahat hays",
+        title: "Error",
+        description: "Please fill all fields.",
         status: "error",
         isClosable: true,
         duration: 3000,
       });
       return;
     }
-
     try {
       setLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate loading
       const updated = posts.map((e) =>
         e.id === editId
           ? { ...e, imageUrl: editImageUrl, description: editDescription }
           : e
       );
-
       setPost(updated);
       setEditId(null);
       setEditImageUrl("");
       setEditDescription("");
       setIsOpen(false);
       toast({
-        title: "wow naka update jud oh",
-        description: "na feel ko talaga na success eh",
+        title: "Success",
+        description: "Post updated successfully.",
         status: "success",
         isClosable: true,
         duration: 3000,
       });
     } catch (error) {
-      console.error(error);
+      console.error("Error updating post:", error);
       toast({
-        title: "Error updating post",
-        description: "Something went wrong, please try again.",
+        title: "Error",
+        description: "Failed to update post.",
         status: "error",
         isClosable: true,
         duration: 3000,
       });
     } finally {
-      setLoading(false);
-    }
-  }
-
-  // Add post here
-  async function handleAdd() {
-    try {
-      if (!imageUrl.trim() || !description) {
-        toast({
-          title: "lagyan lahat",
-          description: "lagyan mo lahat hays",
-          status: "error",
-          isClosable: true,
-          duration: 3000,
-        });
-        return;
-      }
       setLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+  };
+
+  const handleAdd = async () => {
+    if (!imageUrl || !description) {
+      toast({
+        title: "Error",
+        description: "Please fill all fields.",
+        status: "error",
+        isClosable: true,
+        duration: 3000,
+      });
+      return;
+    }
+    try {
+      setLoading(true);
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate loading
+
       const newPost: Post = {
         id: Date.now(),
-        imageUrl: imageUrl.trim(),
+        imageUrl,
         description,
         complete: false,
       };
@@ -133,47 +130,58 @@ export default function Crud() {
       setPost([newPost, ...posts]);
       setImageUrl("");
       setDescription("");
-
       toast({
-        title: "wow naka create jud oh",
-        description: "na feel ko talaga na success eh",
+        title: "Success",
+        description: "Post added successfully.",
         status: "success",
         isClosable: true,
         duration: 3000,
       });
     } catch (error) {
-      console.error(error);
+      console.error("Error adding post:", error);
+      toast({
+        title: "Error",
+        description: "Failed to add post.",
+        status: "error",
+        isClosable: true,
+        duration: 3000,
+      });
     } finally {
       setLoading(false);
     }
-  }
+  };
 
-  // Complete post here
-  function isComplete(id: number) {
-    const completed = posts.map((e) =>
-      e.id === id ? { ...e, complete: !e.complete } : e
-    );
-    setPost(completed);
-  }
+  const handleDelete = async (id: number) => {
+    const confirmDelete = confirm("Are you sure you want to delete this post?");
+    if (!confirmDelete) return;
+    try {
+      setLoading(true);
+      setPost(posts.filter((e) => e.id !== id));
+      toast({
+        title: "Success",
+        description: "Post deleted successfully.",
+        status: "success",
+        isClosable: true,
+        duration: 3000,
+      });
+    } catch (error) {
+      console.error("Error deleting post:", error);
+      toast({
+        title: "Error",
+        description: "Failed to delete post.",
+        status: "error",
+        isClosable: true,
+        duration: 3000,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  function handleDelete(id: number) {
-    const confirm = window.confirm("sure najud ni?");
-    if (!confirm) return;
-
-    setPost(posts.filter((e) => e.id !== id));
-    toast({
-      title: "Deleted successfully",
-      description: "Post has been deleted.",
-      status: "success",
-      isClosable: true,
-      duration: 3000,
-    });
-  }
-
-  //count item here
   const countAll = posts.length;
-  const countComplete = posts.filter((e) => e.complete).length;
   const countNotComplete = posts.filter((e) => !e.complete).length;
+  const countComplete = posts.filter((e) => e.complete).length;
+
   return (
     <Flex
       flexDir={"column"}
