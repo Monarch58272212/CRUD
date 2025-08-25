@@ -25,10 +25,11 @@ export default function Page() {
   const toast = useToast();
 
   //kinde
-  const { isAuthenticated } = useKindeAuth();
+  const { isAuthenticated, isLoading } = useKindeAuth();
 
   //Add Product
   async function handleAdd() {
+    if (isLoading) return; // Ensure loading state is set while checking authentication
     if (!isAuthenticated) {
       toast({
         title: "Di ka pa naka-login!",

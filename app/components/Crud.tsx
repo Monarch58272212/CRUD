@@ -41,110 +41,47 @@ export default function Crud() {
   const [editDescription, setEditDescription] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleSearch = useMemo(() => {
-    return posts.filter((e) =>
-      e.description.toLowerCase().includes(search.toLowerCase().trim())
-    );
-  }, [posts, search]);
-
-  const isComplete = (id: number) => {
-    return setPost(
-      posts.map((e) => (e.id === id ? { ...e, complete: !e.complete } : e))
-    );
-  };
-
-  const handleEdit = (post: Post) => {
-    setIsOpen(true);
-    setEditId(post.id);
-    setEditImageUrl(post.imageUrl);
-    setEditDescription(post.description);
-  };
-
-  const handleUpdate = async () => {
-    if (!editImageUrl || !editDescription) {
-      toast({
-        title: "Error",
-        description: "Please fill all fields.",
-        status: "error",
-        isClosable: true,
-        duration: 3000,
-      });
-      return;
-    }
-    try {
-      setLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate loading
-      const updated = posts.map((e) =>
-        e.id === editId
-          ? { ...e, imageUrl: editImageUrl, description: editDescription }
-          : e
-      );
-      setPost(updated);
-      setEditId(null);
-      setEditImageUrl("");
-      setEditDescription("");
-      setIsOpen(false);
-      toast({
-        title: "Success",
-        description: "Post updated successfully.",
-        status: "success",
-        isClosable: true,
-        duration: 3000,
-      });
-    } catch (error) {
-      console.error("Error updating post:", error);
-      toast({
-        title: "Error",
-        description: "Failed to update post.",
-        status: "error",
-        isClosable: true,
-        duration: 3000,
-      });
-    } finally {
-      setLoading(true);
-    }
-  };
+  //handle Add
 
   const handleAdd = async () => {
     if (!imageUrl || !description) {
       toast({
         title: "Error",
-        description: "Please fill all fields.",
+        description: "Please fill all fields",
         status: "error",
-        isClosable: true,
         duration: 3000,
+        isClosable: true,
       });
       return;
     }
+
     try {
       setLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate loading
-
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call
       const newPost: Post = {
         id: Date.now(),
         imageUrl,
         description,
         complete: false,
       };
-
-      setPost([newPost, ...posts]);
+      setPost([...posts, newPost]);
       setImageUrl("");
       setDescription("");
       toast({
         title: "Success",
-        description: "Post added successfully.",
+        description: "Post added successfully",
         status: "success",
-        isClosable: true,
         duration: 3000,
+        isClosable: true,
       });
     } catch (error) {
       console.error("Error adding post:", error);
       toast({
         title: "Error",
-        description: "Failed to add post.",
+        description: "Failed to add post",
         status: "error",
-        isClosable: true,
         duration: 3000,
+        isClosable: true,
       });
     } finally {
       setLoading(false);
@@ -156,31 +93,104 @@ export default function Crud() {
     if (!confirmDelete) return;
     try {
       setLoading(true);
-      setPost(posts.filter((e) => e.id !== id));
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call
+      const updatedPosts = posts.filter((post) => post.id !== id);
+      setPost(updatedPosts);
       toast({
         title: "Success",
-        description: "Post deleted successfully.",
+        description: "Post deleted successfully",
         status: "success",
-        isClosable: true,
         duration: 3000,
+        isClosable: true,
       });
     } catch (error) {
       console.error("Error deleting post:", error);
       toast({
         title: "Error",
-        description: "Failed to delete post.",
+        description: "Failed to delete post",
         status: "error",
-        isClosable: true,
         duration: 3000,
+        isClosable: true,
       });
     } finally {
       setLoading(false);
     }
   };
 
-  const countAll = posts.length;
+  const handleEdit = (post: Post) => {
+    setEditId(post.id);
+    setEditImageUrl(post.imageUrl);
+    setEditDescription(post.description);
+    setIsOpen(true);
+  };
+  const handleUpdate = async () => {
+    if (!editImageUrl || !editDescription) {
+      toast({
+        title: "Error",
+        description: "Please fill all fields",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const updatedPost = posts.map((e) =>
+        e.id === editId
+          ? { ...e, imageUrl: editImageUrl, description: editDescription }
+          : e
+      );
+      setPost(updatedPost);
+      setEditId(null);
+      setEditImageUrl("");
+      setEditDescription("");
+      setIsOpen(false);
+      toast({
+        title: "Success",
+        description: "Post updated successfully",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      console.error("Error updating post:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update post",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const countAll = useMemo(() => posts.length, [posts]);
   const countNotComplete = posts.filter((e) => !e.complete).length;
   const countComplete = posts.filter((e) => e.complete).length;
+
+  const handleSearch = useMemo(() => {
+    return posts
+      .filter((e) =>
+        e.description.toLowerCase().includes(search.toLowerCase().trim())
+      )
+      .sort((a, b) =>
+        sortz
+          ? a.description.localeCompare(b.description)
+          : b.description.localeCompare(a.description)
+      );
+  }, [posts, search, sortz]);
+
+  const isComplete = (id: number) => {
+    const completed = posts.map((e) =>
+      e.id === id ? { ...e, complete: !e.complete } : e
+    );
+    setPost(completed);
+  };
 
   return (
     <Flex
@@ -194,7 +204,7 @@ export default function Crud() {
     >
       <Flex w={"70%"}>
         <FormControl flex={1} mr={2}>
-          <FormLabel>Dire pag Search oii</FormLabel>
+          <FormLabel>Dire pag Search oiidwdw</FormLabel>
           <Input
             type="text"
             placeholder="Search diria lagi pagnaa kay panitaon hayss"
@@ -262,8 +272,8 @@ export default function Crud() {
                 src={e.imageUrl}
                 width={300}
                 height={300}
-                alt={"ambot oii"}
-                layout="responsive"
+                alt="ambot oii"
+                style={{ objectFit: "cover", width: "300px", height: "300px" }}
               />
               <Text
                 onClick={() => isComplete(e.id)}
@@ -276,7 +286,12 @@ export default function Crud() {
                 <Button colorScheme="green" onClick={() => handleEdit(e)}>
                   Edit
                 </Button>
-                <Button colorScheme="red" onClick={() => handleDelete(e.id)}>
+                <Button
+                  colorScheme="red"
+                  onClick={() => handleDelete(e.id)}
+                  isDisabled={loading}
+                  isLoading={loading}
+                >
                   Delete
                 </Button>
               </Flex>

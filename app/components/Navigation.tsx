@@ -8,6 +8,7 @@ import {
   LogoutLink,
 } from "@kinde-oss/kinde-auth-nextjs/components";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import Menu from "./Menu";
 
 export default async function Navigation() {
   const { getUser } = getKindeServerSession();
@@ -16,7 +17,7 @@ export default async function Navigation() {
   return (
     <Flex
       m={"auto"}
-      w={"70%"}
+      w={["90%", "80", "70%"]}
       gap={5}
       justify={"center"}
       align={"center"}
@@ -26,22 +27,24 @@ export default async function Navigation() {
       mb={10}
     >
       <Link href={"/"}>
-        <Button>Home</Button>
+        <Button display={["none", "none", "block"]}>Home</Button>
       </Link>
       <Link href={"/Create"}>
-        <Button>Create</Button>
+        <Button display={["none", "none", "block"]}>Create</Button>
       </Link>
       <Link href={"/FetchAll"}>
-        <Button>All Post</Button>
+        <Button display={["none", "none", "block"]}>All Post</Button>
       </Link>
 
       {user ? (
         <Flex justify={"center"} align={"center"} gap={2}>
           {" "}
-          <Avatar src={user.picture || ""} />
-          <Text>{user.given_name}!</Text>{" "}
+          <Avatar src={user.picture || ""} size="sm" />
+          <Text fontSize={"sm"}>{user.given_name}!</Text>{" "}
           <LogoutLink>
-            <Button colorScheme="green">Logout</Button>
+            <Button colorScheme="green" display={["none", "none", "block"]}>
+              Logout
+            </Button>
           </LogoutLink>
         </Flex>
       ) : (
@@ -54,6 +57,8 @@ export default async function Navigation() {
           </RegisterLink>
         </Flex>
       )}
+
+      <Menu />
     </Flex>
   );
 }
