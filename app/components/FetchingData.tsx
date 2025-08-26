@@ -3,11 +3,8 @@
 import { Avatar, Flex, SimpleGrid, Text } from "@chakra-ui/react";
 import Image from "next/image";
 import prisma from "../lib/prisma";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 
 export default async function FetchingData() {
-  const { getUser } = getKindeServerSession();
-  const user = await getUser();
   const data = await prisma.product.findMany({
     orderBy: {
       createdAt: "desc",
@@ -38,7 +35,7 @@ export default async function FetchingData() {
                 layout="responsive"
                 alt={e.name}
               />
-              <Avatar src={user?.picture || ""} size={"xs"} />
+              <Avatar src={e.user?.picture || undefined} size={"xs"} />
 
               <Text> Name: {e.name}</Text>
               <Text>Price: {Number(e.price)}</Text>
