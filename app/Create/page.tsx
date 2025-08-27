@@ -8,6 +8,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-nextjs";
+import Image from "next/image";
 import { useState } from "react";
 
 interface Product {
@@ -100,7 +101,6 @@ export default function Page() {
       flexDir={"column"}
       align={"center"}
       justify={"center"}
-      borderWidth={1}
     >
       <Flex flexDir={"column"} w={"70%"} gap={5}>
         <FormControl>
@@ -136,6 +136,15 @@ export default function Page() {
         <Button onClick={handleAdd} isDisabled={loading} isLoading={loading}>
           Add Product
         </Button>
+        {imageURL && (
+          <Image
+            alt="Product preview"
+            src={imageURL}
+            width={200}
+            height={200}
+            style={{ objectFit: "contain" }}
+          />
+        )}
       </Flex>
     </Flex>
   );

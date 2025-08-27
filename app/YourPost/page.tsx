@@ -180,11 +180,17 @@ export default function Page() {
   }
 
   return (
-    <Flex flexDir={"column"} justify={"center"} align={"center"}>
+    <Flex
+      flexDir={"column"}
+      justify={"center"}
+      align={"center"}
+      w={"95%"}
+      m={"auto"}
+    >
       <Text fontSize={"2xl"} mb={5}>
         Fetching Data from Prisma
       </Text>
-      <Flex w={"90%"} justify={"center"} align={"center"} mb={4}>
+      <Flex w={"90%"} maxW={"lg"} justify={"center"} align={"center"} mb={4}>
         <Input
           value={search}
           onChange={(e) => setSearch(e.target.value)}

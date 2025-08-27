@@ -22,7 +22,7 @@ export default function Menu() {
   const links = [
     { name: "Home", href: "/" },
     { name: "Create", href: "/Create" },
-    { name: "All Post", href: "/FetchAll" },
+    { name: "All Post", href: "/YourPost" },
   ];
 
   const pathname = usePathname();

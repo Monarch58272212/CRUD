@@ -17,19 +17,22 @@ import { usePathname } from "next/navigation";
 import { KindeUser } from "@kinde-oss/kinde-auth-nextjs";
 import Menu from "./Menu";
 
+interface Links {
+  name: string;
+  href: string;
+}
+
+interface NavigationClientProps {
+  links: Links[];
+  user: KindeUser<Record<string, undefined>> | null;
+}
+
 export default function NavigationClient({
   user,
-}: {
-  user: KindeUser<Record<string, "">> | null;
-}) {
+  links,
+}: NavigationClientProps) {
   const pathname = usePathname();
   const linkColor = useColorModeValue("teal.500", "teal.300");
-
-  const links = [
-    { name: "Home", href: "/" },
-    { name: "Create", href: "/Create" },
-    { name: "All Post", href: "/YourPost" },
-  ];
 
   return (
     <Flex
@@ -43,7 +46,7 @@ export default function NavigationClient({
       borderRadius="full"
       mb={10}
     >
-      {links.map((link) => {
+      {links?.map((link) => {
         const isActive = pathname === link.href;
 
         return (

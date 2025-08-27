@@ -1,18 +1,61 @@
-"use server";
-
-import { Avatar, Flex, SimpleGrid, Text } from "@chakra-ui/react";
+"use client";
+import { Avatar, Flex, SimpleGrid, Text, useToast } from "@chakra-ui/react";
 import Image from "next/image";
-import prisma from "../lib/prisma";
+import { useEffect, useState } from "react";
+import ProductSkeleton from "./Skeleton";
 
-export default async function FetchingData() {
-  const data = await prisma.product.findMany({
-    orderBy: {
-      createdAt: "desc",
-    },
-    include: {
-      user: true,
-    },
-  });
+interface Product {
+  id: string;
+  imageURL: string;
+  name: string;
+  price: number;
+  user: {
+    name: string;
+    email: string;
+    picture?: string;
+  };
+}
+
+export default function FetchingData() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const toast = useToast();
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    async function showAllProduct() {
+      try {
+        setLoading(true);
+        const req = await fetch("/api/products/");
+        if (!req.ok) {
+          throw new Error("basta mali sa frontend sa get api product ");
+        }
+        const data = await req.json();
+        setProducts(data);
+        toast({
+          title: "wow goods ang fetching",
+          description: "wow good",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+      } catch (error) {
+        console.log("noooooo error sa api frontend product", error);
+        toast({
+          title: "gagi mali pajud sa api frontend product",
+          description: "mali oi",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      } finally {
+        setLoading(false);
+      }
+    }
+    showAllProduct();
+  }, [toast]);
+  if (loading) {
+    return <ProductSkeleton />;
+  }
 
   return (
     <Flex
@@ -23,10 +66,10 @@ export default async function FetchingData() {
       w={"100%"}
     >
       <SimpleGrid columns={[1, 2, 3, 4]} spacing={4}>
-        {data.length === 0 ? (
+        {products.length === 0 ? (
           <Text m={"auto"}>way data pag add sa!!!</Text>
         ) : (
-          data.map((e) => (
+          products.map((e) => (
             <Flex key={e.id} flexDir={"column"} align={"center"} gap={2}>
               <Image
                 src={e.imageURL || "/default.jpg"}
