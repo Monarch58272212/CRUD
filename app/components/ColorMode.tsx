@@ -5,7 +5,11 @@ export function ColorMode() {
   return (
     <header>
       <Button onClick={toggleColorMode}>
-        {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
+        {colorMode === "light" ? (
+          <MoonIcon />
+        ) : (
+          <SunIcon color={"yellow.200"} />
+        )}
       </Button>
     </header>
   );

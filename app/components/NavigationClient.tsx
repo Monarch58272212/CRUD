@@ -18,6 +18,7 @@ import { KindeUser } from "@kinde-oss/kinde-auth-nextjs";
 import Menu from "./Menu";
 import { Links } from "../Types/types";
 import { ColorMode } from "./ColorMode";
+import Image from "next/image";
 
 interface NavigationClientProps {
   links: Links[];
@@ -43,6 +44,10 @@ export default function NavigationClient({
       borderRadius="full"
       mb={10}
     >
+      <Link href={"/"}>
+        <Image src={"/logo.png"} width={30} height={30} alt="logo" />
+      </Link>
+
       {links?.map((link) => {
         const isActive = pathname === link.href;
 
