@@ -20,13 +20,6 @@ export default function FetchingData() {
         }
         const data = await req.json();
         setProducts(data);
-        toast({
-          title: "wow goods ang fetching",
-          description: "wow good",
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-        });
       } catch (error) {
         console.log("noooooo error sa api frontend product", error);
         toast({
