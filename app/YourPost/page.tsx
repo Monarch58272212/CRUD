@@ -39,8 +39,6 @@ export default function Page() {
   //kinde
   const { user, isAuthenticated } = useKindeAuth();
 
-  // Total Price
-
   //search function
   const searchData = useMemo(() => {
     return products.filter((e) =>
@@ -48,7 +46,7 @@ export default function Page() {
     );
   }, [products, search]);
 
-  //Edit FunctionSS
+  //Edit Function
   const handleEdit = (product: Product) => {
     setIsOpen(true);
     setEditId(product.id);

@@ -1,7 +1,21 @@
 "use client";
-import { Avatar, Box, Flex, Text, useToast } from "@chakra-ui/react";
+import {
+  Avatar,
+  Box,
+  Flex,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Text,
+  useToast,
+  Button,
+  Input,
+} from "@chakra-ui/react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ProductSkeleton from "./Skeleton";
 import { Product } from "../Types/types";
 
@@ -9,6 +23,26 @@ export default function FetchingData() {
   const [products, setProducts] = useState<Product[]>([]);
   const toast = useToast();
   const [loading, setLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [editId, setEditId] = useState<string | null>(null);
+  const [editImageURL, setEditimageURL] = useState("");
+  const [editName, setEditName] = useState("");
+  const [editPrice, setEditPrice] = useState("");
+  const [search, setSearch] = useState("");
+
+  const handleSearch = useMemo(() => {
+    return products.filter((e) =>
+      e.name.toLowerCase().includes(search.toLowerCase().trim())
+    );
+  }, [products, search]);
+
+  const handleModal = (product: Product) => {
+    setIsOpen(true);
+    setEditimageURL(product.imageURL);
+    setEditId(product.id);
+    setEditName(product.name);
+    setEditPrice(product.price.toString());
+  };
 
   useEffect(() => {
     async function showAllProduct() {
@@ -40,45 +74,119 @@ export default function FetchingData() {
   }
 
   return (
-    <Box
-      width="95%"
-      sx={{
-        columnCount: [1, 2, 3, 4, 5, 6],
-      }}
-      gap={5}
-    >
-      {products.map((e) => (
-        <Box
-          key={e.id}
-          sx={{ breakInside: "avoid", mb: 4 }}
-          bg={"gray.700"}
-          p={2}
-          gap={2}
-          borderRadius={"md"}
-          display={"flex"}
-          flexDir={"column"}
-          boxShadow={"sm"}
-        >
-          <Image
-            src={e.imageURL || "/default.jpg"}
-            width={500}
-            height={300}
-            alt={e.name}
-            style={{
-              objectFit: "cover",
-              borderRadius: "8px",
-              width: "100%",
-              height: "auto",
-            }}
-          />
-          <Flex gap={2} align={"center"}>
-            <Avatar src={e.user?.picture || undefined} size={"xs"} />
-            <Text fontSize={"xs"} color={"gray.500"}>
-              {e.user.name}
-            </Text>
-          </Flex>
-        </Box>
-      ))}
-    </Box>
+    <Flex flexDir="column" align="center" px={4} py={6} gap={6}>
+      {/* Search Bar */}
+      <Flex align="center" w="100%" maxW="600px">
+        <Input
+          placeholder="Search products..."
+          borderRadius="full"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          px={4}
+          py={2}
+          bg="gray.800"
+          color="white"
+        />
+      </Flex>
+      <Box
+        width="95%"
+        sx={{
+          columnCount: [1, 2, 3, 4],
+        }}
+        gap={5}
+      >
+        {handleSearch.length === 0 ? (
+          <Text>{`way data ${search}`}</Text>
+        ) : (
+          handleSearch.map((e) => (
+            <Box
+              key={e.id}
+              sx={{ breakInside: "avoid", mb: 4 }}
+              bg={"gray.700"}
+              p={2}
+              gap={2}
+              borderRadius={"md"}
+              display={"flex"}
+              flexDir={"column"}
+              boxShadow={"sm"}
+            >
+              <Image
+                onClick={() => handleModal(e)}
+                src={e.imageURL || "/default.jpg"}
+                width={500}
+                height={300}
+                alt={e.name}
+                style={{
+                  objectFit: "cover",
+                  borderRadius: "8px",
+                  width: "100%",
+                  height: "auto",
+                }}
+              />
+              <Flex gap={2} align={"center"}>
+                <Avatar src={e.user?.picture || undefined} size={"xs"} />
+                <Text fontSize={"xs"} color={"gray.500"}>
+                  {e.user.name}
+                </Text>
+              </Flex>
+            </Box>
+          ))
+        )}
+
+        <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalCloseButton />
+            <ModalBody display={"flex"} flexDir={"column"}>
+              <Image
+                src={editImageURL || "/default.jpg"}
+                width={500}
+                height={500}
+                alt={editName}
+                style={{
+                  objectFit: "cover",
+                  borderRadius: "8px",
+                  width: "100%",
+                  height: "auto",
+                }}
+              />
+              <Flex gap={2} align="center" mt={2}>
+                <Avatar
+                  size="sm"
+                  src={
+                    products.find((p) => p.id === editId)?.user?.picture ||
+                    undefined
+                  }
+                />
+                <Text fontSize="sm" color="gray.400">
+                  {products.find((p) => p.id === editId)?.user?.name ||
+                    "Unknown"}
+                </Text>
+              </Flex>
+              <Flex
+                color="gray.400"
+                gap={2}
+                flexDir={"column"}
+                align={"flex-start"}
+              >
+                <Text>Name: {editName}</Text>
+                <Text>Price: {editPrice}</Text>
+              </Flex>
+            </ModalBody>
+
+            <ModalFooter>
+              <Button
+                colorScheme="blue"
+                mr={3}
+                onClick={() => setIsOpen(false)}
+              >
+                Close
+              </Button>
+              <Button variant="ghost">Secondary Action</Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </Box>
+    </Flex>
   );
 }

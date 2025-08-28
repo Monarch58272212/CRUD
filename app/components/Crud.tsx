@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Box,
   Button,
   Flex,
   FormControl,
@@ -13,7 +14,6 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  SimpleGrid,
   Text,
   useToast,
 } from "@chakra-ui/react";
@@ -52,6 +52,27 @@ export default function Crud({ productList, title }: Posts) {
           : b.description.localeCompare(a.description)
       );
   }, [posts, search, sortz]);
+
+  //Download Image
+  const downloadImage = async (url: string, filename: string) => {
+    const confirm = window.confirm("sure jud ka??");
+    if (!confirm) return;
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(blobUrl);
+    } catch (err) {
+      console.error("Failed to download image:", err);
+    }
+  };
 
   //Add Product
   const handleAdd = async () => {
@@ -171,7 +192,7 @@ export default function Crud({ productList, title }: Posts) {
       flexDir={"column"}
       justify={"center"}
       align={"center"}
-      w={"70%"}
+      w={"95%"}
       borderWidth={1}
       p={5}
       gap={10}
@@ -230,19 +251,47 @@ export default function Crud({ productList, title }: Posts) {
         </Button>
       </Flex>
 
-      <SimpleGrid columns={[1, 2, 3, 4]} spacing={3}>
+      <Box
+        w={"auto"}
+        sx={{
+          columnCount: [1, 2, 3, 4],
+        }}
+      >
         {handleSearch.length === 0 ? (
           <Text>Way sulod pag add sa oi</Text>
         ) : (
           handleSearch.map((e) => (
-            <Flex key={e.id} flexDir={"column"}>
+            <Box
+              borderRadius={"md"}
+              display={"flex"}
+              gap={2}
+              key={e.id}
+              flexDir={"column"}
+              sx={{ breakInside: "avoid" }}
+              p={2}
+              mb={3}
+              bg={"gray.700"}
+            >
               <Image
                 alt="basta"
-                width={300}
-                height={300}
-                layout="responsive"
+                width={600}
+                height={600}
+                style={{
+                  objectFit: "cover",
+                  borderRadius: "6px",
+                }}
                 src={e.imageUrl}
               />
+              <Box>
+                {" "}
+                <Button
+                  colorScheme="blue"
+                  onClick={() => downloadImage(e.imageUrl, `image-${e.id}.jpg`)}
+                >
+                  Download
+                </Button>
+              </Box>
+
               <Text
                 onClick={() => handleComplete(e.id)}
                 color={e.complete ? "gray.600" : ""}
@@ -258,10 +307,10 @@ export default function Crud({ productList, title }: Posts) {
                   Delete
                 </Button>
               </Flex>
-            </Flex>
+            </Box>
           ))
         )}
-      </SimpleGrid>
+      </Box>
 
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <ModalOverlay />
