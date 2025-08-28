@@ -1,20 +1,9 @@
 "use client";
-import { Avatar, Flex, SimpleGrid, Text, useToast } from "@chakra-ui/react";
+import { Avatar, Box, Flex, Text, useToast } from "@chakra-ui/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import ProductSkeleton from "./Skeleton";
-
-interface Product {
-  id: string;
-  imageURL: string;
-  name: string;
-  price: number;
-  user: {
-    name: string;
-    email: string;
-    picture?: string;
-  };
-}
+import { Product } from "../Types/types";
 
 export default function FetchingData() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -58,34 +47,45 @@ export default function FetchingData() {
   }
 
   return (
-    <Flex
-      flexDirection={"column"}
-      alignItems={"center"}
-      gap={4}
-      p={4}
-      w={"100%"}
+    <Box
+      width="95%"
+      sx={{
+        columnCount: [1, 2, 3, 4, 5, 6],
+      }}
+      gap={5}
     >
-      <SimpleGrid columns={[1, 2, 3, 4]} spacing={4}>
-        {products.length === 0 ? (
-          <Text m={"auto"}>way data pag add sa!!!</Text>
-        ) : (
-          products.map((e) => (
-            <Flex key={e.id} flexDir={"column"} align={"center"} gap={2}>
-              <Image
-                src={e.imageURL || "/default.jpg"}
-                width={300}
-                height={300}
-                layout="responsive"
-                alt={e.name}
-              />
-              <Avatar src={e.user?.picture || undefined} size={"xs"} />
-
-              <Text> Name: {e.name}</Text>
-              <Text>Price: {Number(e.price)}</Text>
-            </Flex>
-          ))
-        )}
-      </SimpleGrid>
-    </Flex>
+      {products.map((e) => (
+        <Box
+          key={e.id}
+          sx={{ breakInside: "avoid", mb: 4 }}
+          bg={"gray.700"}
+          p={2}
+          gap={2}
+          borderRadius={"md"}
+          display={"flex"}
+          flexDir={"column"}
+          boxShadow={"sm"}
+        >
+          <Image
+            src={e.imageURL || "/default.jpg"}
+            width={500}
+            height={300}
+            alt={e.name}
+            style={{
+              objectFit: "cover",
+              borderRadius: "8px",
+              width: "100%",
+              height: "auto",
+            }}
+          />
+          <Flex gap={2} align={"center"}>
+            <Avatar src={e.user?.picture || undefined} size={"xs"} />
+            <Text fontSize={"xs"} color={"gray.500"}>
+              {e.user.name}
+            </Text>
+          </Flex>
+        </Box>
+      ))}
+    </Box>
   );
 }

@@ -10,13 +10,9 @@ import {
 import { useKindeAuth } from "@kinde-oss/kinde-auth-nextjs";
 import Image from "next/image";
 import { useState } from "react";
+import { Product } from "../Types/types";
+import { useRouter } from "next/navigation";
 
-interface Product {
-  id: number;
-  imageURL: string;
-  name: string;
-  price: number;
-}
 export default function Page() {
   const [products, setProduct] = useState<Product[]>([]);
   const [imageURL, setImageURL] = useState("");
@@ -24,6 +20,7 @@ export default function Page() {
   const [price, setPrice] = useState("");
   const [loading, setLoading] = useState(false);
   const toast = useToast();
+  const router = useRouter();
 
   //kinde
   const { isAuthenticated, isLoading } = useKindeAuth();
@@ -81,6 +78,7 @@ export default function Page() {
         isClosable: true,
         duration: 3000,
       });
+      router.push("/YourPost");
     } catch (error) {
       console.error(error);
       toast({

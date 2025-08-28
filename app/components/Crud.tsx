@@ -19,16 +19,15 @@ import {
 } from "@chakra-ui/react";
 import Image from "next/image";
 import { useMemo, useState } from "react";
+import { Post } from "../Types/types";
 
-interface Post {
-  id: number;
-  imageUrl: string;
-  description: string;
-  complete: boolean;
+interface Posts {
+  title: string;
+  productList: Post[];
 }
 
-export default function Crud() {
-  const [posts, setPost] = useState<Post[]>([]);
+export default function Crud({ productList, title }: Posts) {
+  const [posts, setPost] = useState<Post[]>(productList);
   const [imageUrl, setImageUrl] = useState("");
   const [description, setDescription] = useState("");
   const toast = useToast();
@@ -41,142 +40,11 @@ export default function Crud() {
   const [editDescription, setEditDescription] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
-  //handle Add
-
-  const handleAdd = async () => {
-    if (!imageUrl || !description) {
-      toast({
-        title: "Error",
-        description: "Please fill all fields",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-      return;
-    }
-
-    try {
-      setLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call
-      const newPost: Post = {
-        id: Date.now(),
-        imageUrl,
-        description,
-        complete: false,
-      };
-      setPost([...posts, newPost]);
-      setImageUrl("");
-      setDescription("");
-      toast({
-        title: "Success",
-        description: "Post added successfully",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
-    } catch (error) {
-      console.error("Error adding post:", error);
-      toast({
-        title: "Error",
-        description: "Failed to add post",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDelete = async (id: number) => {
-    const confirmDelete = confirm("Are you sure you want to delete this post?");
-    if (!confirmDelete) return;
-    try {
-      setLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call
-      const updatedPosts = posts.filter((post) => post.id !== id);
-      setPost(updatedPosts);
-      toast({
-        title: "Success",
-        description: "Post deleted successfully",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
-    } catch (error) {
-      console.error("Error deleting post:", error);
-      toast({
-        title: "Error",
-        description: "Failed to delete post",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleEdit = (post: Post) => {
-    setEditId(post.id);
-    setEditImageUrl(post.imageUrl);
-    setEditDescription(post.description);
-    setIsOpen(true);
-  };
-  const handleUpdate = async () => {
-    if (!editImageUrl || !editDescription) {
-      toast({
-        title: "Error",
-        description: "Please fill all fields",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-      return;
-    }
-
-    try {
-      setLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      const updatedPost = posts.map((e) =>
-        e.id === editId
-          ? { ...e, imageUrl: editImageUrl, description: editDescription }
-          : e
-      );
-      setPost(updatedPost);
-      setEditId(null);
-      setEditImageUrl("");
-      setEditDescription("");
-      setIsOpen(false);
-      toast({
-        title: "Success",
-        description: "Post updated successfully",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
-    } catch (error) {
-      console.error("Error updating post:", error);
-      toast({
-        title: "Error",
-        description: "Failed to update post",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const countAll = useMemo(() => posts.length, [posts]);
-  const countNotComplete = posts.filter((e) => !e.complete).length;
-  const countComplete = posts.filter((e) => e.complete).length;
-
+  //Search
   const handleSearch = useMemo(() => {
     return posts
       .filter((e) =>
-        e.description.toLowerCase().includes(search.toLowerCase().trim())
+        e.description.toLowerCase().includes(search.trim().toLowerCase())
       )
       .sort((a, b) =>
         sortz
@@ -185,12 +53,118 @@ export default function Crud() {
       );
   }, [posts, search, sortz]);
 
-  const isComplete = (id: number) => {
+  //Add Product
+  const handleAdd = async () => {
+    if (!imageUrl || !description) {
+      toast({
+        title: "butangi tanan",
+        description: "butangi lagi tanan",
+        status: "error",
+        isClosable: true,
+        duration: 3000,
+      });
+      return;
+    }
+    try {
+      setLoading(true);
+      await new Promise((e) => setTimeout(e, 2000));
+      const newPost: Post = {
+        id: Date.now(),
+        imageUrl: imageUrl.trim(),
+        description: description.trim(),
+        complete: false,
+      };
+
+      setPost([...posts, newPost]);
+      setDescription("");
+      setImageUrl("");
+      toast({
+        title: "yeheyyy",
+        description: "wow",
+        status: "success",
+        isClosable: true,
+        duration: 3000,
+      });
+    } catch (error) {
+      console.log("mali oi imong create", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  //Delete Product
+  const handleDelete = (id: number) => {
+    const confirm = window.confirm("sure jud ka???");
+    if (!confirm) return;
+
+    const deleted = posts.filter((e) => e.id !== id);
+    setPost(deleted);
+    toast({
+      title: "yeheyyy ok na delete nimo",
+      description: "wow goods na imong delete",
+      status: "success",
+      isClosable: true,
+      duration: 3000,
+    });
+  };
+
+  //Edit Product
+  const handleEdit = (post: Post) => {
+    setEditId(post.id);
+    setEditImageUrl(post.imageUrl);
+    setEditDescription(post.description);
+    setIsOpen(true);
+  };
+
+  //Update Product
+  const handleUpdate = async () => {
+    try {
+      if (!editDescription || !editImageUrl) {
+        toast({
+          title: "butangi tanan sa edit oii",
+          description: "butangi lagi tanan dire sa edit",
+          status: "error",
+          isClosable: true,
+          duration: 3000,
+        });
+        return;
+      }
+      setLoading(true);
+      await new Promise((e) => setTimeout(e, 3000));
+      const updated = posts.map((e) =>
+        e.id === editId
+          ? { ...e, imageUrl: editImageUrl, description: editDescription }
+          : e
+      );
+      setPost(updated);
+      setEditDescription("");
+      setEditImageUrl("");
+      setIsOpen(false);
+      toast({
+        title: "yeheyyy ok na update nimo",
+        description: "wow goods na imong update",
+        status: "success",
+        isClosable: true,
+        duration: 3000,
+      });
+    } catch (error) {
+      console.log("agoy mali ka sa update nimo", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  //Complete
+  const handleComplete = (id: number) => {
     const completed = posts.map((e) =>
       e.id === id ? { ...e, complete: !e.complete } : e
     );
     setPost(completed);
   };
+
+  const completeProduct = posts.filter((e) => e.complete).length;
+  const notCompleteProduct = posts.filter((e) => !e.complete).length;
+  const count = posts.length;
 
   return (
     <Flex
@@ -202,19 +176,23 @@ export default function Crud() {
       p={5}
       gap={10}
     >
-      <Flex w={"70%"}>
-        <FormControl flex={1} mr={2}>
-          <FormLabel>Dire pag Search oiidwdw</FormLabel>
+      <Text>
+        Complete: {completeProduct} / Not Complete: {notCompleteProduct} / Count
+        Product: {count}
+      </Text>
+      <Flex justify={"center"} gap={3} align={"center"}>
+        <Text>{title}</Text>
+        <FormControl>
           <Input
             type="text"
-            placeholder="Search diria lagi pagnaa kay panitaon hayss"
+            placeholder="Search dire"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-          <Button onClick={() => setSort(!sortz)} mt={2}>
-            {sortz ? "A-Z" : "Z-A"}
-          </Button>
         </FormControl>
+        <Button onClick={() => setSort(!sortz)}>
+          {sortz ? "A - Z" : "Z - A"}
+        </Button>
       </Flex>
       <Flex
         flexDir={"column"}
@@ -252,46 +230,31 @@ export default function Crud() {
         </Button>
       </Flex>
 
-      <Text>
-        Count Item: {countAll} / Not Complete: {countNotComplete} / Complete:{" "}
-        {countComplete}
-      </Text>
-
-      <SimpleGrid columns={[1, 2, 3, 4]} spacing={4}>
+      <SimpleGrid columns={[1, 2, 3, 4]} spacing={3}>
         {handleSearch.length === 0 ? (
-          <Text m={"auto"}>Nooooooo!!!!!!</Text>
+          <Text>Way sulod pag add sa oi</Text>
         ) : (
           handleSearch.map((e) => (
-            <Flex
-              key={e.id}
-              flexDir={"column"}
-              justify={"center"}
-              align={"center"}
-            >
+            <Flex key={e.id} flexDir={"column"}>
               <Image
-                src={e.imageUrl}
+                alt="basta"
                 width={300}
                 height={300}
-                alt="ambot oii"
-                style={{ objectFit: "cover", width: "300px", height: "300px" }}
+                layout="responsive"
+                src={e.imageUrl}
               />
               <Text
-                onClick={() => isComplete(e.id)}
-                color={e.complete ? "green.500" : ""}
-                textDecor={e.complete ? "line-through" : "none"}
+                onClick={() => handleComplete(e.id)}
+                color={e.complete ? "gray.600" : ""}
+                textDecor={e.complete ? "line-through" : ""}
               >
-                DESCRIPTION: {e.description}
+                Description: {e.description}
               </Text>
-              <Flex gap={2} mt={2}>
+              <Flex gap={2}>
                 <Button colorScheme="green" onClick={() => handleEdit(e)}>
                   Edit
                 </Button>
-                <Button
-                  colorScheme="red"
-                  onClick={() => handleDelete(e.id)}
-                  isDisabled={loading}
-                  isLoading={loading}
-                >
+                <Button colorScheme="red" onClick={() => handleDelete(e.id)}>
                   Delete
                 </Button>
               </Flex>
@@ -303,7 +266,7 @@ export default function Crud() {
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader m={"auto"}>Update</ModalHeader>
+          <ModalHeader>Modal Title</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <FormControl>
@@ -325,11 +288,11 @@ export default function Crud() {
             </FormControl>
           </ModalBody>
 
-          <ModalFooter gap={2}>
+          <ModalFooter gap={3}>
             <Button
               colorScheme="green"
-              onClick={handleUpdate}
               isLoading={loading}
+              onClick={handleUpdate}
             >
               Update
             </Button>

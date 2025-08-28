@@ -16,11 +16,7 @@ import {
 import { usePathname } from "next/navigation";
 import { KindeUser } from "@kinde-oss/kinde-auth-nextjs";
 import Menu from "./Menu";
-
-interface Links {
-  name: string;
-  href: string;
-}
+import { Links } from "../Types/types";
 
 interface NavigationClientProps {
   links: Links[];

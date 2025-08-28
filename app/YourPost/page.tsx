@@ -1,6 +1,7 @@
 "use client";
 import {
   Avatar,
+  Box,
   Button,
   Flex,
   FormControl,
@@ -13,7 +14,6 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  SimpleGrid,
   Text,
   useToast,
 } from "@chakra-ui/react";
@@ -21,13 +21,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-nextjs";
 import ProductSkeleton from "../components/Skeleton";
-
-interface Product {
-  id: string;
-  imageURL: string;
-  name: string;
-  price: number;
-}
+import { Product } from "../Types/types";
 
 export default function Page() {
   const [products, setProduct] = useState<Product[]>([]);
@@ -199,12 +193,26 @@ export default function Page() {
         />
       </Flex>
 
-      <SimpleGrid columns={[1, 2, 3, 4]} spacing={4}>
+      <Box
+        w={"100%"}
+        sx={{
+          columnCount: [1, 2, 3, 4, 5, 6],
+        }}
+      >
         {searchData.length === 0 ? (
           <Text m={"auto"}>way data pag add sa!!!</Text>
         ) : (
           searchData.map((e: Product) => (
-            <Flex key={e.id} flexDir={"column"} align={"center"} gap={2}>
+            <Box
+              display={"flex"}
+              flexDir={"column"}
+              p={2}
+              sx={{ breakInside: "avoid", mb: "10px" }}
+              bg={"gray.700"}
+              key={e.id}
+              borderRadius={"md"}
+              gap={2}
+            >
               <Image
                 src={e.imageURL || "/default.jpg"}
                 width={400}
@@ -212,7 +220,17 @@ export default function Page() {
                 style={{ objectFit: "cover" }}
                 alt={e.name}
               />
-              <Avatar name="Sasuke Uchiha" src={user?.picture || undefined} />
+              <Flex gap={2}>
+                <Avatar
+                  size={"xs"}
+                  name="Sasuke Uchiha"
+                  src={user?.picture || undefined}
+                />
+                <Text color={"gray.500"} fontSize={"xs"}>
+                  {user?.email || null}
+                </Text>
+              </Flex>
+
               <Text> Name: {e.name}</Text>
               <Text>Price: {Number(e.price)}</Text>
               <Flex gap={2}>
@@ -223,10 +241,10 @@ export default function Page() {
                   Delete
                 </Button>
               </Flex>
-            </Flex>
+            </Box>
           ))
         )}
-      </SimpleGrid>
+      </Box>
 
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <ModalOverlay />
@@ -240,7 +258,7 @@ export default function Page() {
                 src={editImageURL || "/default.jpg"}
                 width={300}
                 height={300}
-                layout="responsive"
+                style={{ objectFit: "cover", width: "100%", height: "auto" }}
                 alt={"Product Image"}
               />
               <Input
