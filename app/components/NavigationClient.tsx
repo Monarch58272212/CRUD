@@ -17,6 +17,7 @@ import { usePathname } from "next/navigation";
 import { KindeUser } from "@kinde-oss/kinde-auth-nextjs";
 import Menu from "./Menu";
 import { Links } from "../Types/types";
+import { ColorMode } from "./ColorMode";
 
 interface NavigationClientProps {
   links: Links[];
@@ -85,6 +86,10 @@ export default function NavigationClient({
           </RegisterLink>
         </Flex>
       )}
+
+      <Flex display={["none", "none", "block"]}>
+        <ColorMode />
+      </Flex>
       <Menu />
     </Flex>
   );

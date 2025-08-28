@@ -13,6 +13,7 @@ import {
   useToast,
   Button,
   Input,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
@@ -29,6 +30,7 @@ export default function FetchingData() {
   const [editName, setEditName] = useState("");
   const [editPrice, setEditPrice] = useState("");
   const [search, setSearch] = useState("");
+  const color = useColorModeValue("white", "gray.800");
 
   const handleSearch = useMemo(() => {
     return products.filter((e) =>
@@ -84,8 +86,7 @@ export default function FetchingData() {
           onChange={(e) => setSearch(e.target.value)}
           px={4}
           py={2}
-          bg="gray.800"
-          color="white"
+          borderWidth={1}
         />
       </Flex>
       <Box
@@ -102,12 +103,13 @@ export default function FetchingData() {
             <Box
               key={e.id}
               sx={{ breakInside: "avoid", mb: 4 }}
-              bg={"gray.700"}
+              bg={color}
               p={2}
               gap={2}
               borderRadius={"md"}
               display={"flex"}
               flexDir={"column"}
+              borderWidth={1}
               boxShadow={"sm"}
             >
               <Image

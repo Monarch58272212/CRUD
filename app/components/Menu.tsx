@@ -17,6 +17,7 @@ import React from "react";
 import { HamburgerIcon } from "@chakra-ui/icons";
 import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs";
 import { usePathname } from "next/navigation";
+import { ColorMode } from "./ColorMode";
 
 export default function Menu() {
   const links = [
@@ -68,6 +69,8 @@ export default function Menu() {
                 </Link>
               );
             })}
+
+            <ColorMode />
           </DrawerBody>
 
           <DrawerFooter display={"flex"} justifyContent={"space-between"}>

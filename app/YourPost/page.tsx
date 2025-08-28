@@ -15,6 +15,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Text,
+  useColorModeValue,
   useToast,
 } from "@chakra-ui/react";
 import React, { useEffect, useMemo, useState } from "react";
@@ -22,6 +23,7 @@ import Image from "next/image";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-nextjs";
 import ProductSkeleton from "../components/Skeleton";
 import { Product } from "../Types/types";
+import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
 
 export default function Page() {
   const [products, setProduct] = useState<Product[]>([]);
@@ -29,6 +31,8 @@ export default function Page() {
   const [loadingButton, setLoadingButton] = useState(false);
   const toast = useToast();
   const [search, setSearch] = useState("");
+  const color = useColorModeValue("white", "gray.800");
+
   //Edit
   const [isOpen, setIsOpen] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
@@ -188,13 +192,14 @@ export default function Page() {
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Dire ang search.."
           mb={4}
+          borderRadius={"full"}
         />
       </Flex>
 
       <Box
         w={"100%"}
         sx={{
-          columnCount: [1, 2, 3, 4, 5, 6],
+          columnCount: [1, 2, 3, 4],
         }}
       >
         {searchData.length === 0 ? (
@@ -206,16 +211,17 @@ export default function Page() {
               flexDir={"column"}
               p={2}
               sx={{ breakInside: "avoid", mb: "10px" }}
-              bg={"gray.700"}
+              bg={color}
               key={e.id}
               borderRadius={"md"}
               gap={2}
+              borderWidth={1}
             >
               <Image
                 src={e.imageURL || "/default.jpg"}
                 width={400}
                 height={300}
-                style={{ objectFit: "cover" }}
+                style={{ objectFit: "cover", borderRadius: "5px" }}
                 alt={e.name}
               />
               <Flex gap={2}>
@@ -232,11 +238,31 @@ export default function Page() {
               <Text> Name: {e.name}</Text>
               <Text>Price: {Number(e.price)}</Text>
               <Flex gap={2}>
-                <Button colorScheme="green" onClick={() => handleEdit(e)}>
-                  Edit
+                <Button
+                  variant={"ghost"}
+                  borderWidth={1}
+                  onClick={() => handleEdit(e)}
+                  color={"green.700"}
+                  _hover={{
+                    transform: "scale(1.1)",
+                    transition: "all 0.2s",
+                    bg: "green.500",
+                  }}
+                >
+                  <EditIcon />
                 </Button>
-                <Button colorScheme="red" onClick={() => handleDelete(e.id)}>
-                  Delete
+                <Button
+                  variant={"ghost"}
+                  borderWidth={1}
+                  onClick={() => handleDelete(e.id)}
+                  color={"red.800"}
+                  _hover={{
+                    transform: "scale(1.1)",
+                    transition: "all 0.2s",
+                    bg: "red.500",
+                  }}
+                >
+                  <DeleteIcon />
                 </Button>
               </Flex>
             </Box>

@@ -1,13 +1,16 @@
 // components/ProductSkeleton.tsx
+"use client";
 import {
   Box,
   Skeleton,
   SkeletonText,
   VStack,
   SkeletonCircle,
+  useColorModeValue,
 } from "@chakra-ui/react";
 
 export default function ProductSkeleton() {
+  const color = useColorModeValue("white", "gray.500");
   return (
     <Box
       w={"100%"}
@@ -16,7 +19,7 @@ export default function ProductSkeleton() {
       overflow="hidden"
       p="5"
       boxShadow="md"
-      bg="gray.800"
+      bg={color}
     >
       <Skeleton height="200px" borderRadius="md" />
 
